@@ -1,10 +1,12 @@
 package com.wkodate.stormtwitter;
 
 import backtype.storm.Config;
+import backtype.storm.LocalCluster;
 import backtype.storm.StormSubmitter;
 import backtype.storm.generated.StormTopology;
 import backtype.storm.tuple.Fields;
-import com.wkodate.stormtwitter.spout.TwitterStreamSpout;
+import com.wkodate.stormtwitter.spout.TwitterSpout;
+import org.apache.commons.lang.StringUtils;
 import storm.trident.TridentTopology;
 
 /**
@@ -13,12 +15,14 @@ import storm.trident.TridentTopology;
 public class TwitterStreamTopology {
 
     public static StormTopology buildTopology() {
-        TwitterStreamSpout spout = new TwitterStreamSpout();
         TridentTopology topology = new TridentTopology();
+        TwitterSpout spout = new TwitterSpout();
         topology.newStream("twitterSpout", spout)
+                .parallelismHint(1)
+                .shuffle()
                 .each(
                         new Fields("screen_name", "text", "created_at"),
-                        new PrintSampleStream(),
+                        new TweetPrinter(),
                         new Fields("dev_null")
                 )
                 .parallelismHint(4);
@@ -29,7 +33,12 @@ public class TwitterStreamTopology {
         Config conf = new Config();
         conf.setMaxSpoutPending(20);
         conf.setNumWorkers(3);
-        StormSubmitter.submitTopologyWithProgressBar(args[0], conf, buildTopology());
+        if (args.length > 0 && StringUtils.isNotEmpty(args[0])) {
+            StormSubmitter.submitTopologyWithProgressBar(args[0], conf, buildTopology());
+        } else {
+            LocalCluster cluster = new LocalCluster();
+            cluster.submitTopology("TwitterStreamTopology", conf, buildTopology());
+        }
     }
 
 }
