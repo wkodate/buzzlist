@@ -9,10 +9,9 @@ import storm.trident.topology.TransactionAttempt;
 import twitter4j.*;
 import twitter4j.conf.ConfigurationBuilder;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 /**
@@ -30,7 +29,7 @@ public class TweetEmitter implements ITridentSpout.Emitter<Long> {
 
     public TweetEmitter(int index) {
         this.index = index;
-        tweetList = Collections.synchronizedList(new ArrayList<>());
+        tweetList = new CopyOnWriteArrayList<>();
         initTwitterStream();
     }
 
@@ -57,12 +56,10 @@ public class TweetEmitter implements ITridentSpout.Emitter<Long> {
             return;
         }
         Iterator iterator = tweetList.iterator();
-        synchronized (tweetList) {
             while (iterator.hasNext()) {
                 Tweet tw = (Tweet) iterator.next();
                 collector.emit(new Values(tw.screenName, tw.text, tw.createdAt));
             }
-        }
         tweetList.clear();
     }
 
