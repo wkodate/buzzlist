@@ -14,24 +14,26 @@ import java.util.Map;
  */
 public class TweetSpout implements ITridentSpout {
 
-    public BatchCoordinator getCoordinator(String s, Map map, TopologyContext topologyContext) {
-        System.out.println("TweetSpout.getCoordinator(): s=" + s + ", map=" + map
-                + ", context=" + topologyContext);
+    public final BatchCoordinator getCoordinator(
+            final String str, final Map map, final TopologyContext context) {
+        System.out.println("TweetSpout.getCoordinator(): s=" + str + ", map=" + map
+                + ", context=" + context);
         return new TweetCoordinator();
     }
 
-    public Emitter getEmitter(String s, Map map, TopologyContext topologyContext) {
-        System.out.println("TweetSpout.getEmitter(): s=" + s + ", map=" + map
+    public final Emitter getEmitter(
+            final String str, final Map map, final TopologyContext topologyContext) {
+        System.out.println("TweetSpout.getEmitter(): s=" + str + ", map=" + map
                 + ", context=" + topologyContext);
         return new TweetEmitter();
     }
 
-    public Map getComponentConfiguration() {
+    public final Map getComponentConfiguration() {
         System.out.println("TweetSpout.getComponentConfiguration()");
         return new Config();
     }
 
-    public Fields getOutputFields() {
+    public final Fields getOutputFields() {
         System.out.println("TweetSpout.getOutputFields()");
         return new Fields("screen_name", "text", "created_at");
     }

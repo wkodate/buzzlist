@@ -7,13 +7,16 @@ package com.wkodate.stormtwitter;
  */
 public class Tweet {
 
-    public String screenName;
-    public String text;
-    public String createdAt;
+    public final String screenName;
+    public final String text;
+    public final String createdAt;
 
-    public Tweet(String name, String text, String date) {
+    public Tweet(
+            final String name,
+            final String txt,
+            final String date) {
         this.screenName = name;
-        this.text = text;
+        this.text = txt;
         this.createdAt = date;
     }
 }

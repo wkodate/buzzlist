@@ -44,8 +44,8 @@ public class TweetEmitter implements ITridentSpout.Emitter<Long> {
         stream.sample(TWEET_LANGUAGE);
     }
 
-    public void emitBatch(
-            TransactionAttempt tx, Long l, TridentCollector collector) {
+    public final void emitBatch(
+            final TransactionAttempt tx, final Long l, final TridentCollector collector) {
         Tweet tweet = queue.poll();
         if (tweet == null) {
             return;
@@ -53,14 +53,14 @@ public class TweetEmitter implements ITridentSpout.Emitter<Long> {
         collector.emit(new Values(tweet.screenName, tweet.text, tweet.createdAt));
     }
 
-    public void success(TransactionAttempt transactionAttempt) {
+    public final void success(final TransactionAttempt transactionAttempt) {
     }
 
-    public void close() {
+    public final void close() {
         System.out.println("TweetEmitter.close()");
     }
 
-    public void offer(Tweet tw) {
+    public final void offer(final Tweet tw) {
         queue.offer(tw);
     }
 

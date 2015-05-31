@@ -10,9 +10,15 @@ import org.apache.commons.lang.StringUtils;
 import storm.trident.TridentTopology;
 
 /**
- * TwitterStreamTopology
+ * TwitterStreamTopology.
+ *
+ * @author wkodate
  */
-public class TwitterStreamTopology {
+public final class TwitterStreamTopology {
+
+    private TwitterStreamTopology() {
+
+    }
 
     public static StormTopology buildTopology() {
         TridentTopology topology = new TridentTopology();
@@ -29,7 +35,7 @@ public class TwitterStreamTopology {
         return topology.build();
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(final String[] args) throws Exception {
         Config conf = new Config();
         conf.setMaxSpoutPending(20);
         conf.setNumWorkers(3);

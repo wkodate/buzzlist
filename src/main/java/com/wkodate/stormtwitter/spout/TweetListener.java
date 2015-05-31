@@ -13,14 +13,14 @@ import twitter4j.StallWarning;
  */
 public class TweetListener implements StatusListener {
 
-    private TweetEmitter tweetEmitter;
+    private final TweetEmitter tweetEmitter;
 
-    public TweetListener(TweetEmitter emitter) {
+    public TweetListener(final TweetEmitter emitter) {
         tweetEmitter = emitter;
     }
 
     @Override
-    public void onStatus(Status status) {
+    public final void onStatus(final Status status) {
         Tweet tw = new Tweet(
                 status.getUser().getScreenName(),
                 status.getText().replaceAll(System.getProperty("line.separator"), ""),
@@ -30,29 +30,30 @@ public class TweetListener implements StatusListener {
     }
 
     @Override
-    public void onDeletionNotice(StatusDeletionNotice statusDeletionNotice) {
+    public final void onDeletionNotice(final StatusDeletionNotice statusDeletionNotice) {
 
     }
 
     @Override
-    public void onTrackLimitationNotice(int numberOfLimitedStatuses) {
+    public final void onTrackLimitationNotice(final int numberOfLimitedStatuses) {
         System.out.println("*Got track limitation notice:" + numberOfLimitedStatuses);
     }
 
     @Override
-    public void onScrubGeo(long userId, long upToStatusId) {
-        System.out.println("*Got scrub_geo event userId:" + userId + " upToStatusId:" + upToStatusId);
+    public final void onScrubGeo(final long userId, final long upToStatusId) {
+        System.out.println("*Got scrub_geo event userId:" + userId
+                + " upToStatusId:" + upToStatusId);
 
     }
 
     @Override
-    public void onStallWarning(StallWarning warning) {
+    public final void onStallWarning(final StallWarning warning) {
         System.out.println("*Got stall warning:" + warning);
 
     }
 
     @Override
-    public void onException(Exception e) {
+    public final void onException(final Exception e) {
         e.printStackTrace();
     }
 }

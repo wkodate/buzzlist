@@ -4,7 +4,6 @@ import backtype.storm.tuple.Values;
 import storm.trident.operation.BaseFunction;
 import storm.trident.operation.TridentCollector;
 import storm.trident.tuple.TridentTuple;
-import twitter4j.*;
 
 /**
  * TweetPrinter.
@@ -13,7 +12,8 @@ import twitter4j.*;
  */
 public class TweetPrinter extends BaseFunction {
 
-    public void execute(TridentTuple tuple, TridentCollector collector) {
+    public final void execute(
+            final TridentTuple tuple, final TridentCollector collector) {
         String name = tuple.getStringByField("screen_name");
         String text = tuple.getStringByField("text");
         String createdAt = tuple.getStringByField("created_at");
