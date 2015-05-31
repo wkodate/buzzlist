@@ -5,7 +5,7 @@ import backtype.storm.LocalCluster;
 import backtype.storm.StormSubmitter;
 import backtype.storm.generated.StormTopology;
 import backtype.storm.tuple.Fields;
-import com.wkodate.stormtwitter.spout.TwitterSpout;
+import com.wkodate.stormtwitter.spout.TweetSpout;
 import org.apache.commons.lang.StringUtils;
 import storm.trident.TridentTopology;
 
@@ -16,7 +16,7 @@ public class TwitterStreamTopology {
 
     public static StormTopology buildTopology() {
         TridentTopology topology = new TridentTopology();
-        TwitterSpout spout = new TwitterSpout();
+        TweetSpout spout = new TweetSpout();
         topology.newStream("twitterSpout", spout)
                 .parallelismHint(1)
                 .shuffle()

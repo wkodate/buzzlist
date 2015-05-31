@@ -4,7 +4,7 @@ import storm.trident.spout.ITridentSpout;
 
 /**
  * TweetCoordinator.java
- *
+ * <p>
  * Created by wkodate on 2015/05/24.
  */
 public class TweetCoordinator implements ITridentSpout.BatchCoordinator<Long> {

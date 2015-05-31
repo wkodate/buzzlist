@@ -8,10 +8,16 @@ import twitter4j.StallWarning;
 
 /**
  * TweetListener
- *
+ * <p>
  * Created by wkodate on 2015/05/30.
  */
-public class TweetListener implements StatusListener{
+public class TweetListener implements StatusListener {
+
+    private TweetEmitter tweetEmitter;
+
+    public TweetListener(TweetEmitter emitter) {
+        tweetEmitter = emitter;
+    }
 
     @Override
     public void onStatus(Status status) {
@@ -20,9 +26,7 @@ public class TweetListener implements StatusListener{
                 status.getText().replaceAll(System.getProperty("line.separator"), ""),
                 status.getUser().getCreatedAt().toString()
         );
-        // TODO: queueに追加
-        //tweetList.add(tw);
-
+        tweetEmitter.offer(tw);
     }
 
     @Override
