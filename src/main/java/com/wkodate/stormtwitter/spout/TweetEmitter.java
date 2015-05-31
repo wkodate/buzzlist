@@ -6,30 +6,28 @@ import com.wkodate.stormtwitter.Tweet;
 import storm.trident.operation.TridentCollector;
 import storm.trident.spout.ITridentSpout;
 import storm.trident.topology.TransactionAttempt;
-import twitter4j.*;
 import twitter4j.conf.ConfigurationBuilder;
+import twitter4j.TwitterStream;
+import twitter4j.TwitterStreamFactory;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.LinkedBlockingQueue;
 
 
 /**
  * TweetEmitter.
- *
+ * <p>
  * Created by wkodate on 2015/05/24.
  */
 public class TweetEmitter implements ITridentSpout.Emitter<Long> {
 
-    private int index;
+    private static final String TWEET_LANGUAGE = "ja";
 
     private TwitterStream stream;
 
-    private final List<Tweet> tweetList;
+    private LinkedBlockingQueue<Tweet> queue;
 
-    public TweetEmitter(int index) {
-        this.index = index;
-        tweetList = new CopyOnWriteArrayList<>();
+    public TweetEmitter() {
+        queue = new LinkedBlockingQueue<>();
         initTwitterStream();
     }
 
@@ -42,65 +40,28 @@ public class TweetEmitter implements ITridentSpout.Emitter<Long> {
                 .setOAuthAccessTokenSecret(Secret.ACCESS_TOKEN_SECRET);
         TwitterStreamFactory factory = new TwitterStreamFactory(cb.build());
         stream = factory.getInstance();
-        try {
-            initStreamListener();
-            stream.sample("ja");
-        } catch(TwitterException e) {
-            e.getStackTrace();
-        }
+        stream.addListener(new TweetListener(this));
+        stream.sample(TWEET_LANGUAGE);
     }
 
-    public void emitBatch(
-            TransactionAttempt tx, Long l, TridentCollector collector) {
-        if (tweetList.isEmpty()) {
+    public final void emitBatch(
+            final TransactionAttempt tx, final Long l, final TridentCollector collector) {
+        Tweet tweet = queue.poll();
+        if (tweet == null) {
             return;
         }
-        Iterator iterator = tweetList.iterator();
-            while (iterator.hasNext()) {
-                Tweet tw = (Tweet) iterator.next();
-                collector.emit(new Values(tw.screenName, tw.text, tw.createdAt));
-            }
-        tweetList.clear();
+        collector.emit(new Values(tweet.screenName, tweet.text, tweet.createdAt));
     }
 
-    public void success(TransactionAttempt transactionAttempt) {
+    public final void success(final TransactionAttempt transactionAttempt) {
     }
 
-    public void close() {
+    public final void close() {
         System.out.println("TweetEmitter.close()");
     }
 
-    private void initStreamListener() throws TwitterException{
-        StatusListener listener = new StatusListener() {
-            public void onStatus(Status status) {
-                Tweet tw = new Tweet(
-                        status.getUser().getScreenName(),
-                        status.getText().replaceAll(System.getProperty("line.separator"), ""),
-                        status.getUser().getCreatedAt().toString()
-                );
-                tweetList.add(tw);
-            }
-
-            public void onDeletionNotice(StatusDeletionNotice statusDeletionNotice) {
-
-            }
-
-            public void onTrackLimitationNotice(int numberOfLimitedStatuses) {
-                System.out.println("*Got track limitation notice:" + numberOfLimitedStatuses);
-            }
-
-            public void onScrubGeo(long userId, long upToStatusId) {
-                System.out.println("*Got scrub_geo event userId:" + userId + " upToStatusId:" + upToStatusId);
-            }
-
-            public void onStallWarning(StallWarning warning) {
-                System.out.println("*Got stall warning:" + warning);
-            }
-
-            public void onException(Exception ex) {
-                ex.printStackTrace();
-            }
-        };
-        stream.addListener(listener);
+    public final void offer(final Tweet tw) {
+        queue.offer(tw);
     }
+
 }

@@ -5,18 +5,24 @@ import backtype.storm.LocalCluster;
 import backtype.storm.StormSubmitter;
 import backtype.storm.generated.StormTopology;
 import backtype.storm.tuple.Fields;
-import com.wkodate.stormtwitter.spout.TwitterSpout;
+import com.wkodate.stormtwitter.spout.TweetSpout;
 import org.apache.commons.lang.StringUtils;
 import storm.trident.TridentTopology;
 
 /**
- * TwitterStreamTopology
+ * TwitterStreamTopology.
+ *
+ * @author wkodate
  */
-public class TwitterStreamTopology {
+public final class TwitterStreamTopology {
+
+    private TwitterStreamTopology() {
+
+    }
 
     public static StormTopology buildTopology() {
         TridentTopology topology = new TridentTopology();
-        TwitterSpout spout = new TwitterSpout();
+        TweetSpout spout = new TweetSpout();
         topology.newStream("twitterSpout", spout)
                 .parallelismHint(1)
                 .shuffle()
@@ -29,7 +35,7 @@ public class TwitterStreamTopology {
         return topology.build();
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(final String[] args) throws Exception {
         Config conf = new Config();
         conf.setMaxSpoutPending(20);
         conf.setNumWorkers(3);

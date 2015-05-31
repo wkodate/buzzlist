@@ -4,27 +4,28 @@ import storm.trident.spout.ITridentSpout;
 
 /**
  * TweetCoordinator.java
- *
+ * <p>
  * Created by wkodate on 2015/05/24.
  */
 public class TweetCoordinator implements ITridentSpout.BatchCoordinator<Long> {
 
-    public Long initializeTransaction(long txid, Long prevMetadata, Long currMetadata) {
+    public final Long initializeTransaction(
+            final long txid, final Long prevMetadata, final Long currMetadata) {
         if (prevMetadata == null) {
             return 1L;
         }
         return prevMetadata + 1L;
     }
 
-    public void success(long l) {
+    public final void success(final long l) {
 
     }
 
-    public boolean isReady(long l) {
+    public final boolean isReady(final long l) {
         return true;
     }
 
-    public void close() {
+    public final void close() {
         System.out.println("TweetCoordinator.close()");
     }
 }
