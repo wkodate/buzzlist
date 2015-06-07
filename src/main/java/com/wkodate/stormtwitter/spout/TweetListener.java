@@ -1,10 +1,10 @@
 package com.wkodate.stormtwitter.spout;
 
 import com.wkodate.stormtwitter.Tweet;
-import twitter4j.StatusListener;
+import twitter4j.StallWarning;
 import twitter4j.Status;
 import twitter4j.StatusDeletionNotice;
-import twitter4j.StallWarning;
+import twitter4j.StatusListener;
 
 /**
  * TweetListener

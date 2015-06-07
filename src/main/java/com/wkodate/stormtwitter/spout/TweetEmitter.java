@@ -6,9 +6,9 @@ import com.wkodate.stormtwitter.Tweet;
 import storm.trident.operation.TridentCollector;
 import storm.trident.spout.ITridentSpout;
 import storm.trident.topology.TransactionAttempt;
-import twitter4j.conf.ConfigurationBuilder;
 import twitter4j.TwitterStream;
 import twitter4j.TwitterStreamFactory;
+import twitter4j.conf.ConfigurationBuilder;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -21,8 +21,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class TweetEmitter implements ITridentSpout.Emitter<Long> {
 
     private static final String TWEET_LANGUAGE = "ja";
-
-    private TwitterStream stream;
 
     private LinkedBlockingQueue<Tweet> queue;
 
@@ -39,7 +37,7 @@ public class TweetEmitter implements ITridentSpout.Emitter<Long> {
                 .setOAuthAccessToken(Secret.ACCESS_TOKEN)
                 .setOAuthAccessTokenSecret(Secret.ACCESS_TOKEN_SECRET);
         TwitterStreamFactory factory = new TwitterStreamFactory(cb.build());
-        stream = factory.getInstance();
+        TwitterStream stream = factory.getInstance();
         stream.addListener(new TweetListener(this));
         stream.sample(TWEET_LANGUAGE);
     }
