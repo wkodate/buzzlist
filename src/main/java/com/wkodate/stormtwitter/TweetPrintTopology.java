@@ -10,13 +10,13 @@ import org.apache.commons.lang.StringUtils;
 import storm.trident.TridentTopology;
 
 /**
- * TwitterStreamTopology.
+ * TweetPrintTopology.
  *
  * @author wkodate
  */
-public final class TwitterStreamTopology {
+public final class TweetPrintTopology {
 
-    private TwitterStreamTopology() {
+    private TweetPrintTopology() {
 
     }
 
@@ -43,7 +43,7 @@ public final class TwitterStreamTopology {
             StormSubmitter.submitTopologyWithProgressBar(args[0], conf, buildTopology());
         } else {
             LocalCluster cluster = new LocalCluster();
-            cluster.submitTopology("TwitterStreamTopology", conf, buildTopology());
+            cluster.submitTopology("TweetPrintTopology", conf, buildTopology());
         }
     }
 
