@@ -4,10 +4,12 @@ import backtype.storm.tuple.Values;
 import org.junit.Before;
 import org.junit.Test;
 import storm.trident.operation.TridentCollector;
+import storm.trident.operation.TridentOperationContext;
 import storm.trident.tuple.TridentTuple;
 
+import java.util.HashMap;
+
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -29,7 +31,8 @@ public class TextSplitterTest {
     @Before
     public void prepare() {
         this.textSplitter = new TextSplitter();
-        textSplitter.init();
+        TridentOperationContext context = mock(TridentOperationContext.class);
+        textSplitter.prepare(new HashMap<>(), context);
         collector = mock(TridentCollector.class);
     }
 
